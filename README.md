@@ -56,4 +56,13 @@ the repositories are closed. If you followed a broken link to get here, this
 README is the correction: use the live endpoint above rather than the dead
 source link.
 
+## Registry listing
+
+Official MCP Registry entry: `io.github.atomadictech/aaaa-nexus` (latest
+0.5.1), with `repository` pointing at this repo and the live remote above.
+The older `io.github.atomadictech/atomadic-forge` entries are marked
+**deprecated**: that endpoint returns 404 and its package is retired.
+
+    https://registry.modelcontextprotocol.io/v0/servers?search=atomadic
+
 Built by Thomas Ralph Colvin IV and Jessica Mary Colvin.
