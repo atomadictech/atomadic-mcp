@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Atomadic · MCP install</title>
+<meta name="description" content="Install the AAAA-Nexus MCP server for Claude Code, Cursor, VS Code, Zed and Windsurf.">
+<style>
+  :root{--bg:#06090c;--fg:#e8f1f5;--dim:#8fa3ae;--line:#1b2b35;--accent:#38e1c4;--code:#0b1419}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+  main{max-width:820px;margin:0 auto;padding:56px 22px 90px}
+  a{color:var(--accent)}
+  h1{font-size:30px;line-height:1.2;margin:0 0 6px;letter-spacing:-.02em}
+  h2{font-size:19px;margin:38px 0 10px;letter-spacing:-.01em}
+  p,li{color:var(--fg)}
+  .sub{color:var(--dim);margin:0 0 26px}
+  pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:13.5px;line-height:1.55}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em}
+  p code,li code{background:var(--code);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+  table{border-collapse:collapse;width:100%;font-size:14.5px}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--dim);font-weight:600}
+  .note{border-left:2px solid var(--accent);padding:2px 0 2px 14px;color:var(--dim);margin:22px 0}
+  footer{margin-top:54px;padding-top:18px;border-top:1px solid var(--line);color:var(--dim);font-size:13px}
+</style>
+</head>
+<body>
+<main>
+  <h1>MCP install</h1>
+  <p class="sub">The AAAA-Nexus MCP server puts the Atomadic API in your editor as <code>nexus_*</code> tools.</p>
+
+  <p>AAAA-Nexus is a hosted HTTP API for agent trust: hallucination and drift verdicts, compliance certificates, escrow, provenance-gated retrieval, and randomness. The MCP server is a thin local wrapper around it. Your calls go to <code>https://atomadic.tech</code>; nothing is executed on your machine but the wrapper.</p>
+
+  <h2>1. Install</h2>
+  <pre><code>pip install aaaa-nexus-mcp</code></pre>
+  <p>Requires Python 3.12 or newer. This installs the <code>mcp</code> SDK as a dependency.</p>
+
+  <h2>2. Point your editor at it</h2>
+  <p>Claude Code, Cursor, Claude Desktop, VS Code, Zed and Windsurf all take the same server block. Put this in your MCP config (<code>~/.claude/settings.json</code>, project <code>.mcp.json</code>, or the editor's equivalent):</p>
+  <pre><code>{
+  "mcpServers": {
+    "aaaa-nexus": {
+      "command": "python",
+      "args": ["-m", "aaaa_nexus_mcp"],
+      "env": {
+        "AAAA_NEXUS_API_KEY": "an_your_key_here",
+        "AAAA_NEXUS_AUTOGUARD": "1"
+      }
+    }
+  }
+}</code></pre>
+  <p>Restart the editor. The tools appear prefixed <code>nexus_</code>.</p>
+  <div class="note">No key yet? Delete the <code>AAAA_NEXUS_API_KEY</code> line. The free endpoints below work without one, and the paid tools will tell you what a call costs.</div>
+
+  <h2>3. Configuration</h2>
+  <table>
+    <tr><th>Variable</th><th>Default</th><th>Purpose</th></tr>
+    <tr><td><code>AAAA_NEXUS_API_KEY</code></td><td>none</td><td>Bearer token for paid tools</td></tr>
+    <tr><td><code>AAAA_NEXUS_BASE_URL</code></td><td><code>https://atomadic.tech</code></td><td>API base URL</td></tr>
+    <tr><td><code>AAAA_NEXUS_TIMEOUT</code></td><td><code>20.0</code></td><td>Request timeout in seconds</td></tr>
+    <tr><td><code>AAAA_NEXUS_AUTOGUARD</code></td><td><code>1</code></td><td>Annotate every response with hallucination and drift verdicts</td></tr>
+  </table>
+
+  <h2>4. Free endpoints, no key</h2>
+  <ul>
+    <li><a href="https://atomadic.tech/health">https://atomadic.tech/health</a> — service health and build stamp</li>
+    <li><a href="https://atomadic.tech/v1/rng/quantum">https://atomadic.tech/v1/rng/quantum</a> — quantum-seeded random bytes</li>
+    <li><a href="https://atomadic.tech/v1/metrics">https://atomadic.tech/v1/metrics</a> — live platform metrics</li>
+  </ul>
+
+  <h2>5. First call without the plugin</h2>
+  <p>If you would rather skip MCP entirely, the same surface is plain HTTP:</p>
+  <pre><code>curl -sS https://atomadic.tech/v1/oracle/hallucination \
+  -H "Authorization: Bearer $AAAA_NEXUS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"text":"The moon is made of Swiss cheese."}'</code></pre>
+  <p>Every response carries a <code>_guard</code> block with hallucination and drift verdicts.</p>
+
+  <h2>6. Keys and pricing</h2>
+  <p>Paid calls are metered per call in USDC on Base (x402) or against a credit pack. Get a key at <a href="https://atomadic.tech/pay">atomadic.tech/pay</a>. Per-endpoint prices are published at <a href="https://atomadic.tech/.well-known/pricing.json">/.well-known/pricing.json</a>.</p>
+
+  <h2>If something breaks</h2>
+  <p>Open an issue at <a href="https://github.com/atomadictech/atomadic-mcp/issues">github.com/atomadictech/atomadic-mcp</a> with the tool name, the request body and the response. Include the <code>x-request-id</code> header if you have it; that is the fastest way to trace a call.</p>
+
+  <footer>
+    Built by Thomas Ralph Colvin IV and Jessica Mary Colvin. · <a href="https://atomadic.tech">atomadic.tech</a>
+  </footer>
+</main>
+</body>
+</html>
