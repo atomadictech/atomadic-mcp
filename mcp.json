@@ -1,0 +1,11 @@
+{
+  "name": "aaaa-nexus",
+  "description": "Formally verified AI safety and compliance APIs, hosted. Pay-per-call via x402 USDC, or X-API-Key. 44 MCP tools.",
+  "serverUrl": "https://aaaa-nexus.atomadictech.workers.dev/mcp",
+  "documentationUrl": "https://atomadic.tech/docs.html",
+  "transport": "streamable-http",
+  "protocolVersion": "2025-11-25",
+  "catalog": "https://aaaa-nexus.atomadictech.workers.dev/.well-known/mcp.json",
+  "authentication": ["x402-payment-signature", "X-API-Key"],
+  "verified": "2026-10-26"
+}
