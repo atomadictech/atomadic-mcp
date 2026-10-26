@@ -31,6 +31,35 @@ Then `tools/list` and `tools/call`. 44 tools are exposed. A sample:
 The catalog also mirrors at
 `https://aaaa-nexus.atomadictech.workers.dev/.well-known/mcp.json`.
 
+## The 30-second proof (no key, no account)
+
+The full catalog lives at `https://mcp.atomadic.tech` (129 tools; a key unlocks
+your plan's set). Three tools need no key at all. Run this pair and you have
+seen the thing work:
+
+```bash
+# 1. orientation: install, connect, what you are entitled to
+curl -s -X POST https://mcp.atomadic.tech \
+  -H 'content-type: application/json' \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"murmuration","arguments":{}}}'
+
+# 2. the proof: one function emitted into 12 languages from one source
+curl -s -X POST https://mcp.atomadic.tech \
+  -H 'content-type: application/json' \
+  -d '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"render_polyglot_all_pure","arguments":{"atom_name":"compute_sum_pure"}}}'
+```
+
+That second call returns `ok: true` with Python, JavaScript, TypeScript, Rust,
+Go, C#, Kotlin, Swift, Ruby, Lua, Elixir and Haskell, all from a single node IR.
+
+The baked demo atoms are `compute_sum_pure`, `keep_positive_pure`,
+`double_each_pure`, `count_words_pure`. Call the polyglot tools with an empty
+argument and they answer, honestly, `novel_input_not_baked` — that is a
+boundary, not a bug: arbitrary input is what the SDK is for.
+
+Keys are sold at `https://atomadic.tech/store`. A key is emailed after checkout,
+and `X-API-Key` or `Authorization: Bearer ato_<key>` is the whole auth story.
+
 ## How calls get paid
 
 `tools/call` returns an invocation contract: an HTTPS URL, a method, and a price
