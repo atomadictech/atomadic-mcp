@@ -14,7 +14,8 @@ was a dead end, this is the one that resolves.
 https://aaaa-nexus.atomadictech.workers.dev/mcp
 ```
 
-Streamable HTTP, MCP protocol revision `2025-11-25`. Verified live:
+Streamable HTTP. The server negotiates down to whatever revision the client
+asks for (a `2025-06-18` probe is answered with `2024-11-05`). Verified live:
 
 ```bash
 curl -s -X POST https://aaaa-nexus.atomadictech.workers.dev/mcp \
@@ -31,9 +32,16 @@ Then `tools/list` and `tools/call`. 44 tools are exposed. A sample:
 The catalog also mirrors at
 `https://aaaa-nexus.atomadictech.workers.dev/.well-known/mcp.json`.
 
+## Want fewer tools? Use the starter door
+
+`https://mcp.atomadic.tech/mcp/public` exposes a curated **50** of the 68 tools
+on the main endpoint. Same deterministic calls, same auth rules, smaller
+surface. `GET` it for a self-describing index. Start there if 68 is a lot to
+read.
+
 ## The 30-second proof (no key, no account)
 
-The full catalog lives at `https://mcp.atomadic.tech` (129 tools; a key unlocks
+The full catalog lives at `https://mcp.atomadic.tech` (68 tools; a key unlocks
 your plan's set). Three tools need no key at all. Run this pair and you have
 seen the thing work:
 
@@ -88,7 +96,8 @@ source link.
 ## Registry listing
 
 Official MCP Registry entry: `io.github.atomadictech/aaaa-nexus` (latest
-0.5.1), with `repository` pointing at this repo and the live remote above.
+0.5.2, remote `https://mcp.atomadic.tech/mcp/public`), with `repository`
+pointing at this repo.
 The older `io.github.atomadictech/atomadic-forge` entries are marked
 **deprecated**: that endpoint returns 404 and its package is retired.
 
